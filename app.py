@@ -216,19 +216,38 @@ def view_players():
     players = load_players_from_json('players.json')
 
     if request.method == 'POST':
+        updated_players = []
         # Iterate over the form data and update the players
         for player in players:
-            player.gender = request.form.get(f'gender_{player.name}')
-            player.skill = int(request.form.get(f'skill_{player.name}'))
-            player.preferences = request.form.getlist(f'preferences_{player.name}')
-            # Handle presence checkbox
-            player.present = 'yes' if request.form.get(f'present_{player.name}') else 'no'
+            original_name = request.form.get(f'original_name_{player.name}')  # Get original name
+            new_name = request.form.get(f'name_{player.name}')  # Get new name from the form
 
-        # Save the updated players list to the JSON file (if needed)
-        save_players_to_json(players, 'players.json')
+            # Update player attributes
+            gender = request.form.get(f'gender_{player.name}')
+            skill = int(request.form.get(f'skill_{player.name}'))
+            preferences = request.form.getlist(f'preferences_{player.name}')
+            present = 'yes' if request.form.get(f'present_{player.name}') else 'no'
+
+            # Handle the name change by checking if the name was updated
+            if new_name != original_name:
+                print(f"Player {original_name} has changed their name to {new_name}")
+
+            # Update the player object with new data
+            updated_player = Player(
+                name=new_name,
+                gender=gender,
+                skill=skill,
+                preferences=preferences,
+                present=present
+            )
+            updated_players.append(updated_player)
+
+        # Save the updated players list to the JSON file
+        save_players_to_json(updated_players, 'players.json')
         return redirect(url_for('view_players'))
 
     return render_template('players.html', players=players)
+
 
 @app.route('/add_player', methods=['GET', 'POST'])
 def add_player():
@@ -275,6 +294,7 @@ def clear_history():
 
 @app.route('/remove_player/<name>', methods=['POST'])
 def remove_player(name):
+    print(f"Attempting to delete player: {name}")  # Debugging output
     players = load_players_from_json('players.json')
     
     # Filter out the player with the given name

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Spillere</h2>
+
+<!-- Form for updating player details -->
 <form method="post">
     <table>
         <tr>
@@ -9,13 +11,19 @@
             <th>Køn</th>
             <th>Niveau (1-10)</th>
             <th>Præferencer</th>
+            <th>Actions</th>
         </tr>
         {% for player in players %}
         <tr>
             <td>
                 <input type="checkbox" name="present_{{ player.name }}" value="yes" {% if player.present == 'yes' %}checked{% endif %}>
             </td>
-            <td>{{ player.name }}</td>
+            <td>
+                <!-- Editable name field -->
+                <input type="text" name="name_{{ player.name }}" value="{{ player.name }}" required>
+                <!-- Hidden field to store original name -->
+                <input type="hidden" name="original_name_{{ player.name }}" value="{{ player.name }}">
+            </td>
             <td>
                 <select name="gender_{{ player.name }}" required>
                     <option value="M" {% if player.gender == 'M' %}selected{% endif %}>Mand</option>
@@ -37,9 +45,9 @@
                 {% endif %}
             </td>
             <td>
-                <!-- Delete button -->
-                <form method="post" action="{{ url_for('remove_player', name=player.name) }}" style="display:inline;">
-                    <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this player?');">
+                <!-- Separate form for deletion -->
+                <form method="post" action="{{ url_for('remove_player', name=player.name) }}">
+                    <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete {{ player.name }}?');">
                 </form>
             </td>
         </tr>
@@ -47,4 +55,5 @@
     </table>
     <input type="submit" value="Save Changes">
 </form>
+
 {% endblock %}
