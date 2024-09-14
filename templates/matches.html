@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Genereret kampe</h2>
+
+{% if matches %}
+    <table>
+        <tr>
+            <th>Kampetype</th>
+            <th>Hold 1</th>
+            <th>Hold 2</th>
+            <th>Niveauforskel</th>
+        </tr>
+        {% for match in matches %}
+        <tr>
+            <td>{{ match.team1.match_type }}</td>
+            <td>
+                {% for player in match.team1.players %}
+                    {{ player.name }}{% if not loop.last %} & {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for player in match.team2.players %}
+                    {{ player.name }}{% if not loop.last %} & {% endif %}
+                {% endfor %}
+            </td>
+            <td>{{ match.skill_diff }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Ingen kampe genereret, prøv at ændre i præferencer eller slet kamphistorik</p>
+{% endif %}
+
+{% if unassigned_players %}
+<h3>Personer, der ikke er tildelt en kamp</h3>
+<ul>
+    {% for player in unassigned_players %}
+    <li>{{ player.name }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>Alle spillere til stede spiller en kamp.</p>
+{% endif %}
+
+{% endblock %}

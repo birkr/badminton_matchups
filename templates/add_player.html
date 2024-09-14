@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Player</h2>
+<form method="post">
+    <label>Navn:
+        <input type="text" name="name" required>
+    </label><br>
+    
+    <label>Køn:
+        <select name="gender" id="gender" onchange="updatePreferences()" required>
+            <option value="M">Mand</option>
+            <option value="F">Kvinde</option>
+        </select>
+    </label><br>
+
+    <label>Niveau (1-10):
+        <input type="number" name="skill" min="1" max="10" required>
+    </label><br>
+
+    <label>Præferencer:<br>
+        <div id="preferences">
+            <!-- Preferences will be dynamically updated based on gender -->
+        </div>
+    </label><br>
+
+    <input type="submit" value="Add Player">
+</form>
+
+<script>
+    // Function to dynamically update match preferences based on gender selection
+    function updatePreferences() {
+        var gender = document.getElementById('gender').value;
+        var preferencesDiv = document.getElementById('preferences');
+        preferencesDiv.innerHTML = '';  // Clear existing preferences
+
+        if (gender === 'M') {
+            // Male player: show MD, MS, XD
+            preferencesDiv.innerHTML += '<input type="checkbox" name="preferences" value="MD"> Herredouble (MD)<br>';
+            preferencesDiv.innerHTML += '<input type="checkbox" name="preferences" value="MS"> Herresingle (MS)<br>';
+            preferencesDiv.innerHTML += '<input type="checkbox" name="preferences" value="XD"> Mix-double (XD)<br>';
+        } else if (gender === 'F') {
+            // Female player: show WD, WS, XD
+            preferencesDiv.innerHTML += '<input type="checkbox" name="preferences" value="WD"> Damedouble (WD)<br>';
+            preferencesDiv.innerHTML += '<input type="checkbox" name="preferences" value="WS"> Damesingle (WS)<br>';
+            preferencesDiv.innerHTML += '<input type="checkbox" name="preferences" value="XD"> Mix-double (XD)<br>';
+        }
+    }
+
+    // Initialize preferences based on the default gender (Male)
+    window.onload = function() {
+        updatePreferences();
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Spillere</h2>
+<form method="post">
+    <table>
+        <tr>
+            <th>Til stede?</th>
+            <th>Navn</th>
+            <th>Køn</th>
+            <th>Niveau (1-10)</th>
+            <th>Præferencer</th>
+        </tr>
+        {% for player in players %}
+        <tr>
+            <td>
+                <input type="checkbox" name="present_{{ player.name }}" value="yes" {% if player.present == 'yes' %}checked{% endif %}>
+            </td>
+            <td>{{ player.name }}</td>
+            <td>
+                <select name="gender_{{ player.name }}" required>
+                    <option value="M" {% if player.gender == 'M' %}selected{% endif %}>Mand</option>
+                    <option value="F" {% if player.gender == 'F' %}selected{% endif %}>Kvinde</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" name="skill_{{ player.name }}" min="1" max="10" value="{{ player.skill }}" required>
+            </td>
+            <td>
+                {% if player.gender == 'M' %}
+                    <input type="checkbox" name="preferences_{{ player.name }}" value="MD" {% if 'MD' in player.preferences %}checked{% endif %}> MD
+                    <input type="checkbox" name="preferences_{{ player.name }}" value="MS" {% if 'MS' in player.preferences %}checked{% endif %}> MS
+                    <input type="checkbox" name="preferences_{{ player.name }}" value="XD" {% if 'XD' in player.preferences %}checked{% endif %}> XD
+                {% else %}
+                    <input type="checkbox" name="preferences_{{ player.name }}" value="WD" {% if 'WD' in player.preferences %}checked{% endif %}> WD
+                    <input type="checkbox" name="preferences_{{ player.name }}" value="WS" {% if 'WS' in player.preferences %}checked{% endif %}> WS
+                    <input type="checkbox" name="preferences_{{ player.name }}" value="XD" {% if 'XD' in player.preferences %}checked{% endif %}> XD
+                {% endif %}
+            </td>
+            <td>
+                <!-- Delete button -->
+                <form method="post" action="{{ url_for('remove_player', name=player.name) }}" style="display:inline;">
+                    <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this player?');">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="Save Changes">
+</form>
+{% endblock %}

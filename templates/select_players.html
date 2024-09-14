@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post">
+    <label>Antal baner:
+        <input type="number" name="num_courts" value="10" min="1" required>
+    </label><br>
+    
+    <label>Antal runder før samme kampe kan gentages (ikke påkrævet):
+        <input type="number" name="rounds_between_repeats" value="3" min="1">
+    </label><br>
+
+    <input type="submit" value="Lav kampe">
+</form>
+<!-- Add some spacing here -->
+<br>
+
+<!-- Button to clear the match history -->
+<form method="get" action="{{ url_for('clear_history') }}">
+    <input type="submit" value="Slet kamphistorik" style="margin-top: 10px;">
+</form>
+{% endblock %}
